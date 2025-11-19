@@ -3,10 +3,7 @@ import React from 'react';
 export const SimpleLineChart: React.FC = () => {
     return (
       <div className="relative h-64">
-        <div className="absolute top-4 left-4">
-          <p className="text-sm text-gray-500">May 2025</p>
-          <p className="text-lg font-bold text-gray-900">₦50BN</p>
-        </div>
+        
         
         <svg className="w-full h-full" viewBox="0 0 700 250" preserveAspectRatio="none">
           {/* Grid lines */}
@@ -34,7 +31,7 @@ export const SimpleLineChart: React.FC = () => {
         </svg>
         
         {/* X-axis labels */}
-        <div className="flex justify-between px-4 mt-2 text-xs text-gray-500">
+        <div className="flex justify-between px-4 mt-0 text-xs text-gray-500">
           <span>Feb</span>
           <span>Mar</span>
           <span>Apr</span>

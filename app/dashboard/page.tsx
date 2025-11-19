@@ -1,8 +1,8 @@
 'use client';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import { RxDashboard } from "react-icons/rx";
-import { HiOutlineCursorClick, HiUsers, HiChartBar } from "react-icons/hi";
-import { PiGearSix, PiShieldCheck, PiTicketBold } from "react-icons/pi";
+import { RxDashboard } from 'react-icons/rx';
+import { HiOutlineCursorClick, HiUsers, HiChartBar } from 'react-icons/hi';
+import { PiGearSix, PiShieldCheck, PiTicketBold } from 'react-icons/pi';
 import React, { useState } from 'react';
 import {
   StatCard,
@@ -11,6 +11,7 @@ import {
   LocationsTable,
   SimpleLineChart,
 } from '../components/dashboard';
+import { GreetingCard } from '../components/GreetingCard';
 
 export default function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('12months');
@@ -47,9 +48,11 @@ export default function DashboardPage() {
     );
   };
 
+  const userName = 'Adebowale Paul-George';
+
   return (
     <DashboardLayout
-      userName="Adebowale Paul-George"
+      userName={userName}
       logo={<span className="text-2xl font-bold text-indigo-600">GETSTAC</span>}
       navItems={[
         { name: 'Dashboard', href: '/dashboard', icon: <RxDashboard />  },
@@ -63,49 +66,47 @@ export default function DashboardPage() {
         { name: 'Custom Request', href: '/dashboard/request', icon: <PiTicketBold /> },
       ]}
     >
-      {/* Greeting Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          How's your Afternoon going, Adebowale?
-        </h1>
-        <p className="text-gray-600">How are you feeling this fine afternoon?</p>
-      </div>
+      <section className="space-y-8">
+        <GreetingCard
+          userName={userName}
+          description="How are you feeling this fine afternoon?"
+        />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard label="BALANCE ACROSS STORES" value="₦50,000,000" />
-        <StatCard label="TODAY'S TRANSACTIONS" value="200" />
-        <StatCard label="TOTAL LOCATIONS" value="78" />
-        <StatCard label="TOTAL MANAGERS" value="78" />
-      </div>
-
-      {/* Chart and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2">
-          <ChartSection
-            title="Total Cash Pickup (Across Stores)"
-            selectedPeriod={selectedPeriod}
-            onPeriodChange={setSelectedPeriod}
-          >
-            <SimpleLineChart />
-          </ChartSection>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <StatCard label="Balance Across Stores" value="₦50,000,000" />
+          <StatCard label="Today's Transactions" value="200" />
+          <StatCard label="Total Locations" value="78" />
+          <StatCard label="Total Managers" value="78" />
         </div>
-        
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-          <div className="space-y-3">
-            <QuickActionButton label="Create a new location" />
-            <QuickActionButton label="Create a new Manager" />
-            <QuickActionButton label="Create a new Region" />
+
+        {/* Chart and Quick Actions */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <ChartSection
+              selectedPeriod={selectedPeriod}
+              onPeriodChange={setSelectedPeriod}
+            >
+              <SimpleLineChart />
+            </ChartSection>
+          </div>
+          
+          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="space-y-3">
+              <QuickActionButton label="Create a new location" />
+              <QuickActionButton label="Create a new Manager" />
+              <QuickActionButton label="Create a new Region" />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Locations Table */}
-      <LocationsTable
-        locations={locations}
-        onLocationToggle={handleLocationToggle}
-      />
+        {/* Locations Table */}
+        <LocationsTable
+          locations={locations}
+          onLocationToggle={handleLocationToggle}
+        />
+      </section>
     </DashboardLayout>
   );
 }

@@ -1,4 +1,8 @@
 import React from 'react';
+import { MdOutlineIndeterminateCheckBox } from "react-icons/md";
+
+import Link from 'next/link';
+
 
 interface Location {
     id: string;
@@ -22,20 +26,21 @@ interface Location {
     onLocationToggle,
   }) => {
     return (
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className=" rounded-lg shadow-sm">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-transparent">
           <h3 className="text-xl font-semibold text-gray-900">Today's Trending Locations</h3>
-          <a href="#" className="text-gray-900 underline hover:text-gray-700">
+          <Link href="/dashboard/locations" className="text-gray-900 underline hover:text-gray-700">
             Monitor Location Activities
-          </a>
+          </Link>
         </div>
         
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[720px]">
             <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-medium">
                   <div className="flex items-center gap-2">
+                    <MdOutlineIndeterminateCheckBox />
                     <span>Location Name</span>
                     <span>↓</span>
                   </div>
@@ -48,7 +53,7 @@ interface Location {
                 <th className="px-6 py-4 text-left text-sm font-medium">Fee Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200 text-[12px]">
               {locations.map((location) => (
                 <tr key={location.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useState, useEffect, isValidElement, cloneElement } from 'react';
+import React, { ReactNode, useState, useEffect, isValidElement, cloneElement, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -11,7 +11,8 @@ import {
 } from 'react-icons/hi';
 import logo from '../../../Assets/Logo.png';
 import { Search } from 'lucide-react';
-import profileImage from '../../../Assets/profileImage.jpg'
+import profileImage from '../../../Assets/profileImage.jpg';
+import { AccountManagerCard } from '../AccountManagerCard';
 
 
 interface NavItem {
@@ -28,12 +29,9 @@ interface SupportItem {
 }
 
 interface DashboardLayoutProps {
-  children: ReactNode;
-  /** Custom navigation items */
+  children: ReactNode;  
   navItems?: NavItem[];
-  /** Logo or brand */
   logo?: ReactNode;
-  /** User name to display */
   userName?: string;
   supportItems?: SupportItem[];
 
@@ -52,6 +50,9 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showAccountManager, setShowAccountManager] = useState(false);
+  const accountCardRef = useRef<HTMLDivElement | null>(null);
+  const escalateButtonRef = useRef<HTMLButtonElement | null>(null);
 
 
   useEffect(() => {
@@ -65,6 +66,24 @@ export default function DashboardLayout({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (!showAccountManager) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        accountCardRef.current?.contains(target) ||
+        escalateButtonRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setShowAccountManager(false);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showAccountManager]);
 
 
   const supportNavigation = supportItems?.map(item => ({
@@ -97,6 +116,7 @@ export default function DashboardLayout({
   };
 
   const closeSidebar = () => setSidebarOpen(false);
+  const toggleAccountManager = () => setShowAccountManager((prev) => !prev);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -193,9 +213,9 @@ export default function DashboardLayout({
       {/* Main Content */}
       <div className={`transition-all duration-300 ${!isMobile ? 'pl-64' : ''}`}>
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
-          <div className="flex items-center justify-between px-4 py-4 md:px-8">
-            <div className="flex items-center space-x-4">
+        <header className="sticky top-0 z-30 border-b border-gray-200 bg-white shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-8">
+            <div className="flex flex-1 items-center gap-3 min-w-[220px]">
               {isMobile && (
                 <button
                   onClick={() => setSidebarOpen(true)}
@@ -204,8 +224,8 @@ export default function DashboardLayout({
                   <HiMenu className="w-6 h-6" />
                 </button>
               )}
-              <div className='flex justify-center items-center gap-2'>
-                <div className="relative w-12 h-12">
+              <div className="flex items-center gap-2">
+                <div className="relative h-12 w-12">
                   {/* Profile Image */}
                   <img
                     src={profileImage.src}
@@ -220,12 +240,30 @@ export default function DashboardLayout({
                 </div>
               </div>
             </div>
-            <div className='flex justify-center items-center'>
-              <button className="flex items-center w-full bg-[#242440] text-white py-2 px-5 mr-2 rounded-md text-sm font-medium hover:bg-indigo-800 transition">
-                <HiOutlineLightningBolt className='mr-2' /> Escalate an Issue
-              </button>
-              <button>
-                <HiOutlineBell className='text-2xl' />
+            <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
+              <div className="relative w-full sm:w-auto">
+                <button
+                  ref={escalateButtonRef}
+                  onClick={toggleAccountManager}
+                  aria-expanded={showAccountManager}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-[#242440] py-2 px-4 text-sm font-medium text-white transition hover:bg-indigo-900 sm:w-auto"
+                >
+                  <HiOutlineLightningBolt /> Escalate an Issue
+                </button>
+                {showAccountManager && (
+                  <div
+                    ref={accountCardRef}
+                    className="absolute right-0 top-14 z-40 drop-shadow-xl"
+                  >
+                    <AccountManagerCard onClose={() => setShowAccountManager(false)} />
+                  </div>
+                )}
+              </div>
+              <button
+                className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100"
+                aria-label="Notifications"
+              >
+                <HiOutlineBell className="text-2xl" />
               </button>
             </div>
 
@@ -233,7 +271,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="p-6 md:p-8 min-h-screen">
+        <main className="min-h-screen p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>

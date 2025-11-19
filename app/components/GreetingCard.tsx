@@ -1,14 +1,15 @@
+import React from 'react';
 import { HiSun, HiCloud, HiMoon, HiStar } from 'react-icons/hi';
 
 interface Greeting {
-  line1: string;        // e.g. "How’s your afternoon going, Adebowale?"
-  line2: string;        // e.g. "Hope you're having a productive and wonderful day!"
+  line1: string;       
+  line2: string;        
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const getGreeting = (userName: string = 'there'): Greeting => {
   const hour = new Date().getHours();
-  const name = userName.split(' ')[0]; // Use first name only for natural feel
+  const name = userName.split(' ')[0]; 
 
   if (hour >= 5 && hour < 12) {
     return {
@@ -18,8 +19,8 @@ const getGreeting = (userName: string = 'there'): Greeting => {
     };
   } else if (hour >= 12 && hour < 17) {
     return {
-      line1: `How’s your afternoon going, ${name}?`,
-      line2: 'Hope you’re having a productive and wonderful day!',
+      line1: `How's your afternoon going, ${name}?`,
+      line2: 'Hope you are having a productive and wonderful day!',
       icon: HiCloud,
     };
   } else if (hour >= 17 && hour < 22) {
@@ -35,4 +36,36 @@ const getGreeting = (userName: string = 'there'): Greeting => {
       icon: HiMoon,
     };
   }
+};
+
+interface GreetingCardProps {
+  userName?: string;
+  description?: string;
+  className?: string;
+}
+
+export const GreetingCard: React.FC<GreetingCardProps> = ({
+  userName = 'there',
+  className = '',
+}) => {
+  const { line1, line2, icon: Icon } = getGreeting(userName);
+
+  return (
+    <section
+      className={`w-full rounded-2xl border border-gray-100 p-4 sm:p-6 ${className}`}
+      aria-label="Personal greeting"
+    >
+      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 items-start gap-3 sm:gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 sm:h-14 sm:w-14">
+            <Icon className="h-6 w-6 sm:h-7 sm:w-7" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-lg font-semibold text-gray-900 sm:text-2xl">{line1}</p>
+            <p className="text-sm text-gray-600 sm:text-base">{line2}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
